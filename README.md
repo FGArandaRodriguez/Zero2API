@@ -1,42 +1,36 @@
----
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-# Zero2API 🚀
+## Getting Started
 
-¡Bienvenido a **Zero2API**, el lugar donde transformamos ideas en servicios y el código en superpoderes! 💻 En este repositorio aprenderás desde lo más básico hasta lo más avanzado sobre APIs, comenzando desde cero y escalando hasta dominar el arte de la comunicación entre sistemas. 🌐
+First, run the development server:
 
-## ¿Qué encontrarás aquí? 🛠️
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-Este repositorio está diseñado para quienes desean aprender sobre APIs desde los fundamentos. Ya sea que nunca hayas tocado una API o que quieras fortalecer tus conocimientos, aquí encontrarás un camino estructurado con ejemplos claros, ejercicios prácticos y proyectos interactivos.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### Contenidos del curso:
-- **Introducción a las APIs:** ¿Qué son y por qué son esenciales?
-- **RESTful APIs:** El estándar en la industria.
-- **Autenticación y Seguridad:** Protege tu API con JWT y más.
-- **Métodos HTTP:** GET, POST, PUT, DELETE... ¡Domínalos todos!
-- **Documentación de APIs:** Usando Swagger para crear documentación amigable.
-- **Integración de APIs en proyectos reales:** Conectando servicios en aplicaciones del mundo real.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-## Objetivo 🎯
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-Al finalizar este curso, serás capaz de:
-1. Crear, documentar y consumir tus propias APIs.
-2. Implementar autenticación segura para proteger tus servicios.
-3. Integrar APIs con aplicaciones frontend y backend.
-4. Resolver problemas de integración de servicios y microservicios.
+## Learn More
 
-## Para quién es este repositorio 🧑‍💻
+To learn more about Next.js, take a look at the following resources:
 
-- **Estudiantes de programación** que desean aprender APIs desde cero.
-- **Desarrolladores en crecimiento** que buscan reforzar su conocimiento.
-- **Curiosos tecnológicos** que quieran explorar la magia de la comunicación entre aplicaciones.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## Requisitos 📋
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-- Conocimiento básico de programación (Python, JavaScript o similar).
-- Ganas de aprender y experimentar. 🎉
+## Deploy on Vercel
 
-## ¡Manos a la obra! 🛠️
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Explora los ejemplos, juega con el código y prepárate para dominar el fascinante mundo de las APIs. ¡El viaje de **Zero2API** comienza ahora!
-
----
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

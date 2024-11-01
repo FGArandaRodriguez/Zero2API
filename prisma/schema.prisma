@@ -13,18 +13,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id Int @id @default(autoincrement())
-  username String @unique
-  password String
-  createdAt DateTime @default(now())
+model Mesas {
+  id_mesa Int @id @default(autoincrement())
+  capacidad_mesa Int
+  numero_mesa Int
+  estado_mesa Int
+  id_empleado Int
 }
 
-model Producto {
-  id Int  @id @default(autoincrement())
-  nombre String
-  descripcion String
-  precio Float
-  stock Int
-  createAt DateTime @default(now())
+
+model Reservas {
+  id_reservas Int @id @default(autoincrement())
+  id_cliente Int
+  id_mesa Int
+  fecha_hora DateTime
+  numero_personas_reserva Int
+  confirmacion Int
+}
+
+model Empleados {
+  id_empleados Int @id @default(autoincrement())
+  nombre_empleado String
+  puesto_empleado String
+  salario_empelado Float
+}
+
+model Cliente {
+  id_clientes Int @id @default(autoincrement())
+  nombre_cliente String
+  id_reservas Int
+  numero_telefono Int
+  email_cliente String
 }
