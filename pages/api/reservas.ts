@@ -19,7 +19,7 @@ export default async function Reservas(
         }
     } else if (req.method === 'POST'){
         const { id_cliente, id_mesa, fecha_hora, numero_persona_reservas, confirmacion } = req.body;
-        if (!id_cliente || !id_mesa || !fecha_hora || !numero_persona_reservas || !confirmacion){
+        if (id_cliente == null || id_mesa == null || fecha_hora == null || numero_persona_reservas == null || confirmacion == null){
             return res.status(400).json({message: 'Faltan campos requeridos'})
         }
 
@@ -40,7 +40,7 @@ export default async function Reservas(
         }
     }else if(req.method === 'PATCH'){
         const {id_reservas, id_cliente, id_mesa, fecha_hora, numero_persona_reservas, confirmacion } = req.body;
-        if (!id_cliente || !id_mesa || !fecha_hora || !numero_persona_reservas || !confirmacion){
+        if (id_cliente  == null|| id_mesa == null || !fecha_hora == null || numero_persona_reservas == null || confirmacion == null){
             return res.status(400).json({message: 'Faltan campos requeridos'})
         }
 

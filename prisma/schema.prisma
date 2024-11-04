@@ -15,10 +15,13 @@ datasource db {
 
 model Mesas {
   id_mesa Int @id @default(autoincrement())
-  capacidad_mesa Int
-  numero_mesa Int
-  estado_mesa Int
+  capacidad_mesa Int @db.UnsignedInt
+  numero_mesa Int @unique
+  estado_mesa Int @db.TinyInt // 0: Available, 1: Reserved, 2: Occupied
   id_empleado Int
+  empleado Empleados @relation(fields: [id_empleado], references: [id_empleados])
+  reservas Reservas[]
+  @@index([id_empleado])
 }
 
 
@@ -26,22 +29,28 @@ model Reservas {
   id_reservas Int @id @default(autoincrement())
   id_cliente Int
   id_mesa Int
-  fecha_hora DateTime
-  numero_personas_reserva Int
-  confirmacion Int
+  fecha_hora DateTime @db.Timestamp()
+  numero_personas_reserva Int @db.UnsignedInt
+  confirmacion Int @db.TinyInt // 0: Pending, 1: Confirmed, 2: Cancelled
+  mesa Mesas @relation(fields: [id_mesa], references: [id_mesa])
+  cliente Cliente @relation(fields: [id_cliente], references: [id_clientes])
+  @@index([id_mesa])
+  @@index([id_cliente])
+  @@index([fecha_hora])
 }
 
 model Empleados {
   id_empleados Int @id @default(autoincrement())
-  nombre_empleado String
-  puesto_empleado String
-  salario_empelado Float
+  nombre_empleado String @db.VarChar(100)
+  puesto_empleado String @db.VarChar(50)
+  salario_empleado Decimal @db.Decimal(10, 2)
+  mesas Mesas[]
 }
 
 model Cliente {
   id_clientes Int @id @default(autoincrement())
-  nombre_cliente String
-  id_reservas Int
-  numero_telefono Int
-  email_cliente String
+  nombre_cliente String @db.VarChar(100)
+  numero_telefono String @db.VarChar(20)
+  email_cliente String @unique
+  reservas Reservas[]
 }
