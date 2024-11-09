@@ -34,11 +34,11 @@ model Reservas {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
+  id        Int       @id @default(autoincrement())
+  username  String    @unique
   password  String
-  createdAt DateTime @default(now())
-
+  createdAt DateTime  @default(now())
+  empleado  Empleados?
 }
 
 model Menu {
@@ -69,10 +69,10 @@ model Pedidos {
   Ordenes_cocina Ordenes_cocina[]
 }
 
-model Categorias {
-  id     Int    @id @default(autoincrement())
-  nombre String
-  Menu   Menu[]
+
+model Categoria {
+  id_categoria     Int        @id @default(autoincrement())
+  nombre_categoria String
 }
 
 model Empleados {
@@ -94,9 +94,9 @@ model Clientes {
 }
 
 model Permisos {
-  id          Int    @id @default(autoincrement())
-  nombre      String
-  descripcion String
+  id_permiso Int               @id @default(autoincrement())
+  nombre    String
+  empleados  PermisosEmpleados[]
 }
 
 model Ticket {
@@ -154,4 +154,13 @@ model Ordenes_cocina {
   id_menu           Int 
   cantidad          Int 
   estado            Boolean
+}
+
+model PermisosEmpleados {
+  id_empleado         Int
+  id_permiso          Int
+  empleado            Empleados @relation(fields: [id_empleado], references: [id])
+  permiso             Permisos  @relation(fields: [id_permiso], references: [id_permiso])
+
+  @@unique([id_empleado, id_permiso])
 }

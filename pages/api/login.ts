@@ -1,7 +1,7 @@
 import type {  NextApiRequest, NextApiResponse } from "next";
+import bcypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from "@prisma/client";
-import bcypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -17,7 +17,6 @@ export default async function handler(
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
@@ -27,11 +26,11 @@ export default async function handler(
     if (method == 'POST'){
         const { username, password } = req.body;
 
-
+        //Buscar el usuario en la base de datos (es un arreglo en esta caso)
+        //const userBd = users.find((u) => u.username === username);
         const user = await prisma.user.findUnique({
             where: {username},
         });
-        console.log(user)
 
         if (!user){
             
@@ -40,13 +39,15 @@ export default async function handler(
 
         const isPasswordValid = await bcypt.compare(password, user.password);
 
+        console.log("sss", isPasswordValid)
+
         if (!isPasswordValid){
             return res.status(401).json({error:'Contraseña incorrecta'});
         }
 
         //Generamos el token JWT
         const token = jwt.sign(
-            {userId: user.id, username: user.username, password: password},
+            {userId: user.id, username: user.username},
             process.env.JWT_SECRET as string,
             {expiresIn: '1h'}
         );
