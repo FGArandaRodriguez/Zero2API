@@ -101,11 +101,9 @@ model Metodo_Pago {
 }
 
 model Pedido {
-  id_pedido          Int      @id @default(autoincrement())
+  id_pedido   Int      @id @default(autoincrement())
   total       Float
   pagos       Pago[]
-
   DetallePedido DetallePedido[]
-
   Ticket Ticket[]
 }
