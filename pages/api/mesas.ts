@@ -7,8 +7,15 @@ export default async function Mesas(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+    // Configurar encabezados de CORS
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    // Manejar la solicitud OPTIONS (preflight)
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
 
     if (req.method === 'GET'){
         try {
@@ -21,7 +28,6 @@ export default async function Mesas(
         const { numero, is_temp, capacidad_mesa, numero_mesa, estado_mesa, id_empleado } = req.body;
 
         if (is_temp) {
-            // Crear mesa temporal
             try {
                 const mesaTemporal = await prisma.mesas.create({
                     data: {
@@ -35,7 +41,7 @@ export default async function Mesas(
                     await prisma.mesas.delete({
                         where: { id: mesaTemporal.id },
                     });
-                    console.log(`Mesa ${mesaTemporal.id} eliminada automáticamente`);
+                    console.log('Mesa ${mesaTemporal.id} eliminada automáticamente');
                 }, 1000 * 60 * 60); // 1 hora
 
                 res.status(201).json(mesaTemporal);
@@ -43,12 +49,10 @@ export default async function Mesas(
                 res.status(500).json({ message: 'Error al crear la mesa temporal', error });
             }
         } else {
-            // Validar campos requeridos
             if (!capacidad_mesa || !numero_mesa || !estado_mesa || !id_empleado) {
                 return res.status(400).json({ message: 'Faltan campos requeridos' });
             }
 
-            // Crear mesa regular
             try {
                 const newMesa = await prisma.mesas.create({
                     data: {
@@ -64,7 +68,7 @@ export default async function Mesas(
             }
         }
     } else if (req.method === 'PUT') {
-        const { id_mesa, capacidad_mesa, numero_mesa, estado_mesa, id_empleado } = req.body;
+        const { id, capacidad_mesa, numero_mesa, estado_mesa, id_empleado } = req.body;
 
         if (!capacidad_mesa || !numero_mesa || !estado_mesa || !id_empleado) {
             return res.status(400).json({ message: 'Faltan campos requeridos' });
@@ -72,7 +76,7 @@ export default async function Mesas(
 
         try {
             const updatedMesa = await prisma.mesas.update({
-                where: { id_mesa: parseInt(id_mesa) },
+                where: { id: parseInt(id) },
                 data: {
                     capacidad_mesa: parseInt(capacidad_mesa),
                     numero_mesa: parseInt(numero_mesa),
@@ -85,15 +89,15 @@ export default async function Mesas(
             res.status(500).json({ message: 'Error al actualizar la mesa', error });
         }
     } else if (req.method === 'PATCH') {
-        const { id_mesa, estado_mesa } = req.body;
+        const { id, estado_mesa } = req.body;
 
-        if (!id_mesa || estado_mesa === undefined) {
+        if (!id || estado_mesa === undefined) {
             return res.status(400).json({ message: 'Faltan campos requeridos' });
         }
 
         try {
             const updatedMesaState = await prisma.mesas.update({
-                where: { id_mesa: parseInt(id_mesa) },
+                where: { id: parseInt(id) },
                 data: { estado_mesa: parseInt(estado_mesa) },
             });
             res.status(200).json(updatedMesaState);
@@ -101,21 +105,21 @@ export default async function Mesas(
             res.status(500).json({ message: 'Error al actualizar el estado de la mesa', error });
         }
     } else if (req.method === 'DELETE') {
-        const { id_mesa } = req.query;
+        const { id } = req.query;
 
-        if (!id_mesa) {
+        if (!id) {
             return res.status(400).json({ message: 'El id de la mesa es requerido' });
         }
 
         try {
             const deleteMesa = await prisma.mesas.delete({
-                where: { id_mesa: parseInt(id_mesa as string) },
+                where: { id: parseInt(id as string) },
             });
             res.status(200).json(deleteMesa);
         } catch (error) {
             res.status(500).json({ message: 'Error al eliminar la mesa', error });
         }
     } else {
-        res.status(405).json({ message: 'Método no permitido' });
-    }
+        res.status(405).json({ message: 'Método no permitido' });
+    }
 }
