@@ -25,14 +25,16 @@ export default async function Mesas(
             res.status(500).json({ message: 'Error al obtener las mesas', error });
         }
     } else if (req.method === 'POST') {
-        const { numero, is_temp, capacidad_mesa, numero_mesa, estado_mesa, id_empleado } = req.body;
+        const { is_temp, capacidad_mesa, numero_mesa, estado_mesa, id_empleado } = req.body;
 
         if (is_temp) {
             try {
                 const mesaTemporal = await prisma.mesas.create({
                     data: {
-                        numero_mesa: numero,
-                        estado_mesa: 2  // Estado específico para mesa temporal
+                        numero_mesa: parseInt(numero_mesa),
+                        estado_mesa: 2,  // Estado específico para mesa temporal
+                        capacidad_mesa: 1,
+                        id_empleado: 1
                     },
                 });
 
