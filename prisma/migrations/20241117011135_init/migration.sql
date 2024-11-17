@@ -132,11 +132,15 @@ CREATE TABLE `Pago` (
 
 -- CreateTable
 CREATE TABLE `Metodo_Pago` (
-    `id_metodo_pago` INTEGER NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(191) NULL,
-    `tipo` VARCHAR(191) NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(191) NOT NULL,
+    `descripcion` VARCHAR(191) NULL,
+    `activo` BOOLEAN NOT NULL DEFAULT true,
+    `fecha_creacion` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `ultima_actualizacion` DATETIME(3) NOT NULL,
+    `cargo_adicional` DOUBLE NULL DEFAULT 0.0,
 
-    PRIMARY KEY (`id_metodo_pago`)
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -188,7 +192,7 @@ ALTER TABLE `Pedidos` ADD CONSTRAINT `Pedidos_id_empleado_fkey` FOREIGN KEY (`id
 ALTER TABLE `Ticket` ADD CONSTRAINT `Ticket_id_pedido_fkey` FOREIGN KEY (`id_pedido`) REFERENCES `Pedidos`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Ticket` ADD CONSTRAINT `Ticket_id_metodo_pago_fkey` FOREIGN KEY (`id_metodo_pago`) REFERENCES `Metodo_Pago`(`id_metodo_pago`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Ticket` ADD CONSTRAINT `Ticket_id_metodo_pago_fkey` FOREIGN KEY (`id_metodo_pago`) REFERENCES `Metodo_Pago`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `DetallePedido` ADD CONSTRAINT `DetallePedido_id_pedido_fkey` FOREIGN KEY (`id_pedido`) REFERENCES `Pedidos`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -200,7 +204,7 @@ ALTER TABLE `DetallePedido` ADD CONSTRAINT `DetallePedido_id_menu_fkey` FOREIGN 
 ALTER TABLE `Pago` ADD CONSTRAINT `Pago_id_pedido_fkey` FOREIGN KEY (`id_pedido`) REFERENCES `Pedidos`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Pago` ADD CONSTRAINT `Pago_id_metodo_pago_fkey` FOREIGN KEY (`id_metodo_pago`) REFERENCES `Metodo_Pago`(`id_metodo_pago`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Pago` ADD CONSTRAINT `Pago_id_metodo_pago_fkey` FOREIGN KEY (`id_metodo_pago`) REFERENCES `Metodo_Pago`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Ordenes_cocina` ADD CONSTRAINT `Ordenes_cocina_id_pedidos_fkey` FOREIGN KEY (`id_pedidos`) REFERENCES `Pedidos`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

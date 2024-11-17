@@ -4,37 +4,71 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  switch (req.method) {
-    case 'POST':
-      return await createMetodoPago(req, res);
-    case 'GET':
-      return await getMetodosPago(req, res);
-    default:
-      return res.status(405).end('Method ${req.method} Not Allowed');
-  }
-}
+    if (req.method === 'POST') {
+        const { action, nombre, descripcion, activo, cargo_adicional } = req.body;
 
-async function createMetodoPago(req: NextApiRequest, res: NextApiResponse) {
-  const { nombre, tipo } = req.body;
+        try {
+            if (action === 'create') {
+                // Crear un nuevo método de pago
+                const metodoPago = await prisma.metodo_Pago.create({
+                    data: {
+                        nombre,
+                        descripcion,
+                        activo: activo ?? true,
+                        cargo_adicional: cargo_adicional ?? 0.0,
+                    },
+                });
+                return res.status(201).json({
+                    success: true,
+                    message: 'Método de pago creado exitosamente',
+                    data: metodoPago,
+                });
+            } else if (action === 'update') {
+                const { id, nombre, descripcion, activo, cargo_adicional } = req.body;
 
-  try {
-    const metodoPago = await prisma.metodo_Pago.create({
-      data: {
-        nombre,
-        tipo,
-      },
-    });
-    return res.status(201).json(metodoPago);
-  } catch (error) {
-    return res.status(500).json({ error: 'Error creating Metodo_Pago' });
-  }
-}
+                // Actualizar un método de pago existente
+                const metodoPago = await prisma.metodo_Pago.update({
+                    where: { id },
+                    data: {
+                        nombre,
+                        descripcion,
+                        activo,
+                        cargo_adicional,
+                        ultima_actualizacion: new Date(),
+                    },
+                });
+                return res.status(200).json({
+                    success: true,
+                    message: 'Método de pago actualizado exitosamente',
+                    data: metodoPago,
+                });
+            } else if (action === 'delete') {
+                const { id } = req.body;
 
-async function getMetodosPago(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    const metodosPago = await prisma.metodo_Pago.findMany();
-    return res.status(200).json(metodosPago);
-  } catch (error) {
-    return res.status(500).json({ error: 'Error retrieving Metodo_Pago' });
-  }
+                // Eliminar un método de pago
+                await prisma.metodo_Pago.delete({
+                    where: { id },
+                });
+                return res.status(200).json({
+                    success: true,
+                    message: 'Método de pago eliminado exitosamente',
+                });
+            } else {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Acción no válida. Use "create", "update" o "delete".',
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({
+                success: false,
+                message: 'Error al procesar la solicitud',
+                error: (error as Error).message,
+            });
+        }
+    } else {
+        res.setHeader('Allow', ['POST']);
+        return res.status(405).end(`Método ${req.method} no permitido`);
+    }
 }

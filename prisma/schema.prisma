@@ -104,7 +104,7 @@ model Ticket {
   id_pedido      Int 
   pedido         Pedidos     @relation(fields: [id_pedido], references: [id])
   id_metodo_pago Int
-  metododo_pago  Metodo_Pago @relation(fields: [id_metodo_pago], references: [id_metodo_pago])
+  metodo_pago  Metodo_Pago @relation(fields: [id_metodo_pago], references: [id])
   total          Float
 }
 
@@ -122,18 +122,24 @@ model Pago {
   id             Int         @id @default(autoincrement())
   pedido         Pedidos     @relation(fields: [id_pedido], references: [id])
   id_pedido      Int
-  metodo_pago    Metodo_Pago @relation(fields: [id_metodo_pago], references: [id_metodo_pago])
+  metodo_pago    Metodo_Pago @relation(fields: [id_metodo_pago], references: [id])
   id_metodo_pago Int
   fecha_pago     DateTime    @default(now())
   total          Float
 }
 
 model Metodo_Pago {
-  id_metodo_pago Int      @id @default(autoincrement())
-  Ticket         Ticket[]
-  nombre         String?
-  tipo           String
-  Pago           Pago[]
+    id             Int           @id @default(autoincrement())
+    nombre         String
+    descripcion    String?
+    activo         Boolean       @default(true)
+    fecha_creacion DateTime      @default(now())
+    ultima_actualizacion DateTime @updatedAt
+    cargo_adicional Float?       @default(0.0)
+
+    pagos          Pago[]
+
+    Ticket Ticket[]
 }
 
 model Producto {

@@ -42,7 +42,7 @@ export default async function name(
 
         try{
             const updateEmpleado = await prisma.empleados.update({
-                where: {id_empleado: parseInt(id)},
+                where: {id: parseInt(id)},
                 data: {
                     nombre: nombre,
                     puesto: puesto,
@@ -64,7 +64,7 @@ export default async function name(
         try{
             //esto me va a servir para eliminar el empleado por ID
             const deleteEmpleado = await prisma.empleados.delete({
-                where: {id_empleado: parseInt(id as string)},
+                where: {id: parseInt(id as string)},
             });
             res.status(200).json(deleteEmpleado);
         }catch (error){

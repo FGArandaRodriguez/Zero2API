@@ -25,13 +25,31 @@ export default async function name(
                         pedido: {
                             select: {
                                 fecha: true,
-                                total: true
-                            }
+                                Pago: { 
+                                    select: {
+                                      total: true,
+                                      fecha_pago: true
+                                      
+                                    }
+                                },
+                                DetallePedido: {
+                                    select: {
+                                        cantidad: true,
+                                        subtotal: true,
+                                        Menu: {
+                                            select: {
+                                                nombre: true, 
+                                                precio: true
+                                            }
+                                        }
+                                    }
+                                }
+                            },
                         },
-                        metododo_pago: {
+                        metodo_pago: {
                             select: {
-                                nombre: true,
-                                tipo: true
+                                nombre: true,            
+                                cargo_adicional: true,
                             }
                         }
                     }
@@ -58,12 +76,11 @@ export default async function name(
     } else if (req.method === 'POST') {
         const { id_pedido, id_metodo_pago } = req.body;
         if (!id_pedido || !id_metodo_pago) {
-            return res.status(400).json({ message: 'Faltan campos requeridos' })
+            return res.status(400).json({ message: 'Faltan campos requeridos' });
         }
-
+    
         try {
-            //varios pedidos pueden tener varios tickets y estos tickets deben de mostrar el total de la compra:
-            const totalSum = await prisma.pedido.aggregate({
+            const totalSum = await prisma.pago.aggregate({
                 where: { id_pedido: Number(id_pedido) },
                 _sum: {
                     total: true,
@@ -71,14 +88,15 @@ export default async function name(
             });
             const total = totalSum._sum.total || 0;
 
-            const newProduct = await prisma.ticket.create({
+            const newTicket = await prisma.ticket.create({
                 data: {
                     id_pedido: parseInt(id_pedido),
                     id_metodo_pago: parseInt(id_metodo_pago),
                     total: total,
                 },
             });
-            res.status(201).json(newProduct);
+            
+            res.status(201).json(newTicket);
         } catch (error) {
             res.status(500).json({ message: 'Error al crear el ticket', error });
         }
@@ -89,8 +107,7 @@ export default async function name(
         }
 
         try {
-            //varios pedidos pueden tener varios tickets y estos tickets deben de mostrar el total de la compra:
-            const totalSum = await prisma.pedido.aggregate({
+            const totalSum = await prisma.pago.aggregate({
                 where: { id_pedido: Number(id_pedido) },
                 _sum: {
                     total: true,

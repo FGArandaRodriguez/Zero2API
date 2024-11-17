@@ -18,8 +18,8 @@ export default async function name(
             res.status(500).json({message:'Error al obtener la  Mesa', error});
         }
     } else if (req.method === 'POST'){
-        const { capacidad, numero, estado, idEmpleado } = req.body;
-        if (!capacidad || !numero || !idEmpleado){
+        const { capacidad_mesa, numero_mesa, estado_mesa, idEmpleado } = req.body;
+        if (!capacidad_mesa || !numero_mesa || !idEmpleado){
             return res.status(400).json({message: `Faltan campos requeridos`})
         }
 
@@ -27,9 +27,9 @@ export default async function name(
 
             const newMesa = await prisma.mesas.create({
                 data: {
-                    capacidad,
-                    numero,
-                    estado,
+                    capacidad_mesa,
+                    numero_mesa,
+                    estado_mesa,
                     id_empleado:idEmpleado
                 },
             });
@@ -38,8 +38,8 @@ export default async function name(
             res.status(500).json({message: 'Error al actualizar la Mesa', error});
         }
     }else if(req.method === 'PUT'){
-        const { id, capacidad, numero, estado, idEmpleado } = req.body;
-        if (!capacidad || !numero || !idEmpleado){
+        const { id, capacidad_mesa, numero_mesa, estado_mesa, idEmpleado } = req.body;
+        if (!capacidad_mesa || !numero_mesa || !idEmpleado){
             return res.status(400).json({message: 'Faltan campos requeridos'})
         }
 
@@ -47,9 +47,9 @@ export default async function name(
             const updatemesas = await prisma.mesas.update({
                 where: {id: parseInt(id)},
                 data: {
-                    capacidad,
-                    numero,
-                    estado,
+                    capacidad_mesa,
+                    numero_mesa,
+                    estado_mesa,
                     id_empleado:idEmpleado
                 },
             });
