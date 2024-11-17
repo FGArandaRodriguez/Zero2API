@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,97 +7,151 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Mesas {
+  id              Int       @id @default(autoincrement())
+  capacidad_mesa  Int       @db.UnsignedInt
+  numero_mesa     Int       @unique
+  estado_mesa     Int       @db.TinyInt // 0: Available, 1: Reserved, 2: Occupied
+  id_empleado     Int
+  empleado        Empleados @relation(fields: [id_empleado], references: [id])
+  reservas        Reservas[]
+  Pedidos         Pedidos[]
+  @@index([id_empleado])
+}
+
+model Reservas {
+  id_reservas              Int      @id @default(autoincrement())
+  id_cliente               Int
+  id_mesa                  Int
+  fecha_hora               DateTime @db.Timestamp()
+  numero_personas_reserva  Int      @db.UnsignedInt
+  confirmacion             Int      @db.TinyInt // 0: Pending, 1: Confirmed, 2: Cancelled
+  mesa                     Mesas    @relation(fields: [id_mesa], references: [id])
+  cliente                  Clientes @relation(fields: [id_cliente], references: [id])
+  @@index([id_mesa])
+  @@index([id_cliente])
+  @@index([fecha_hora])
+}
+
 model User {
-  id Int @id @default(autoincrement())
-  username String @unique
-  password String
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
   createdAt DateTime @default(now())
-}
 
-
-model Producto {
-  id Int  @id @default(autoincrement())
-  nombre String
-  descripcion String
-  precio Float
-  stock Int
-  createAt DateTime @default(now())
-
-  id_mesa Int
-  id_clientes Int
-  fecha DateTime
-  total Float
-  id_empleado Int
-  tipo_pedido String
-  Ticket Ticket[]
-  DetallePedido DetallePedido[]
-
-  Pago Pago[]
-}
-//Guayabo && Alexis
-model Ticket {
-  id_ticket Int @id @default(autoincrement())
-
-  id_pedido Int 
-  pedido Pedido @relation(fields: [id_pedido], references: [id_pedido] )
-
-  id_metodo_pago Int
-  metododo_pago Metodo_Pago @relation(fields: [id_metodo_pago], references: [id_metodo_pago])
-
-  total Float
-
-  Producto Producto[]
-}
-
-//Diego y Nata
-model DetallePedido {
-  id_detalle_pedido Int @id @default(autoincrement())
-  id_pedido         Int
-  id_menu           Int
-  cantidad          Int
-  subtotal          Float
-
-  Pedido Pedido @relation(fields: [id_pedido], references: [id_pedido])
-  Menu    Menu    @relation(fields: [id_menu], references: [id_menu])
-
-
-  Producto Producto[]
-}
-
-//Boston y Alek
-model Pago {
-    id             Int           @id @default(autoincrement())
-    pedido        Pedido       @relation(fields: [id_pedido], references: [id_pedido])
-    id_pedido      Int
-    metodo_pago    Metodo_Pago  @relation(fields: [id_metodo_pago], references: [id_metodo_pago])
-    id_metodo_pago Int
-    monto_pago     Float
-    fecha_pago     DateTime      @default(now())
-    total          Float
-
-
-    Producto Producto[]
 }
 
 model Menu {
-  id_menu Int @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
+  nombre       String
+  descripcion  String
+  precio       Float
+  imagen       String
+  categoria    Categorias    @relation(fields: [id_categoria], references: [id])
+  id_categoria Int
   DetallePedido DetallePedido[]
+  Ordenes_cocina Ordenes_cocina[]
 }
 
+model Pedidos {
+  id           Int             @id @default(autoincrement())
+  fecha        DateTime
+  mesa         Mesas           @relation(fields: [id_mesa], references: [id])
+  id_mesa      Int
+  cliente      Clientes        @relation(fields: [id_cliente], references: [id])
+  id_cliente   Int
+  empleado     Empleados       @relation(fields: [id_empleado], references: [id])
+  id_empleado  Int
+  tipo_pedido  String
+  DetallePedido DetallePedido[]
+  Ticket       Ticket[]
+  Pago         Pago[]
+  Ordenes_cocina Ordenes_cocina[]
+}
+
+model Categorias {
+  id     Int    @id @default(autoincrement())
+  nombre String
+  Menu   Menu[]
+}
+
+model Empleados {
+  id      Int     @id @default(autoincrement())
+  nombre  String
+  puesto  String
+  salario Float
+  Mesa    Mesas[]
+  Pedidos Pedidos[]
+}
+
+model Clientes {
+  id       Int       @id @default(autoincrement())
+  nombre   String
+  telefono String
+  email    String
+  Pedidos  Pedidos[]
+  Reservas Reservas[]
+}
+
+model Permisos {
+  id          Int    @id @default(autoincrement())
+  nombre      String
+  descripcion String
+}
+
+model Ticket {
+  id_ticket      Int         @id @default(autoincrement())
+  id_pedido      Int 
+  pedido         Pedidos     @relation(fields: [id_pedido], references: [id])
+  id_metodo_pago Int
+  metododo_pago  Metodo_Pago @relation(fields: [id_metodo_pago], references: [id_metodo_pago])
+  total          Float
+}
+
+model DetallePedido {
+  id_detalle_pedido Int     @id @default(autoincrement())
+  cantidad          Int
+  subtotal          Float
+  Pedido            Pedidos @relation(fields: [id_pedido], references: [id])
+  id_pedido         Int
+  Menu              Menu    @relation(fields: [id_menu], references: [id])
+  id_menu           Int
+}
+
+model Pago {
+  id             Int         @id @default(autoincrement())
+  pedido         Pedidos     @relation(fields: [id_pedido], references: [id])
+  id_pedido      Int
+  metodo_pago    Metodo_Pago @relation(fields: [id_metodo_pago], references: [id_metodo_pago])
+  id_metodo_pago Int
+  fecha_pago     DateTime    @default(now())
+  total          Float
+}
 
 model Metodo_Pago {
-  id_metodo_pago Int @id @default(autoincrement())
-  Ticket Ticket[]
-  nombre String?
-  tipo String
-
-  Pago Pago[]
+  id_metodo_pago Int      @id @default(autoincrement())
+  Ticket         Ticket[]
+  nombre         String?
+  tipo           String
+  Pago           Pago[]
 }
 
-model Pedido {
-  id_pedido   Int      @id @default(autoincrement())
-  total       Float
-  pagos       Pago[]
-  DetallePedido DetallePedido[]
-  Ticket Ticket[]
+model Producto {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  descripcion String
+  precio      Float
+  stock       Int
+  cantidad    Int      @default(0)
+  createAt    DateTime @default(now())
+}
+
+model Ordenes_cocina {
+  id_ordenes_cocina Int     @id @default(autoincrement())
+  pedido            Pedidos @relation(fields: [id_pedidos], references: [id])
+  id_pedidos        Int 
+  menu              Menu    @relation(fields: [id_menu], references: [id])
+  id_menu           Int 
+  cantidad          Int 
+  estado            Boolean
 }

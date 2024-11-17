@@ -1,7 +1,5 @@
 import type {  NextApiRequest, NextApiResponse } from "next";
 import jwt from 'jsonwebtoken';
-import { error } from "console";
-import { userAgent } from "next/server";
 
 interface AuthenticatedRequest extends NextApiRequest {
     user?: {
@@ -30,6 +28,7 @@ export default function handler(
         return res.status(200).json({message: 'La ruta está protegida para este usuario', user: req.user})
 
     }catch(err){
+        console.error(err);
         return res.status(401).json({ error: 'TOKEN INVALIDO LOGUEATE DE NUEVO!!!'})
     }
 }
