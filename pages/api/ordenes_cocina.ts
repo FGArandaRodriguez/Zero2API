@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
+import { setTimeout } from "timers/promises";
 
 const prisma = new PrismaClient();
 
@@ -49,10 +50,24 @@ async function updateStatusOrder(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
+    // Actualizar la orden con el nuevo estado
     const updatedOrder = await prisma.ordenes_cocina.update({
       where: { id_ordenes_cocina: parseInt(id as string) },
       data: { estado: estado },
     });
+
+    // Si el estado es "listo", iniciar el temporizador para eliminarla en 30 segundos
+    if (estado === "listo") {
+      await setTimeout(30000);  // 30 segundos (30000 milisegundos)
+      
+      // Eliminar la orden después de 30 segundos
+      await prisma.ordenes_cocina.delete({
+        where: { id_ordenes_cocina: parseInt(id as string) },
+      });
+      
+      return res.status(200).json({ message: 'La orden fue eliminada automáticamente después de estar lista.' });
+    }
+
     res.status(200).json(updatedOrder);
   } catch (error) {
     res.status(500).json({ message: 'Error al actualizar el estado de la orden', error });
