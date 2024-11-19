@@ -7,8 +7,15 @@ export default async function Reservas(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,DELETE');
+       // Configurar encabezados de CORS
+       res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+       res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
+       res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+   
+       // Manejar la solicitud OPTIONS (preflight)
+       if (req.method === 'OPTIONS') {
+           return res.status(200).end();
+       }
     if (req.method === 'GET'){
         try{
             const Reservas = await prisma.reservas.findMany();
@@ -123,5 +130,5 @@ export default async function Reservas(
         }
     } else {
         res.status(405).json({message: 'Método no permitido'});
-    }
+    }
 }
