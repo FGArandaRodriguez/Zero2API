@@ -16,14 +16,18 @@ export default async function Reservas(
        if (req.method === 'OPTIONS') {
            return res.status(200).end();
        }
-    if (req.method === 'GET'){
-        try{
-            const Reservas = await prisma.reservas.findMany();
-           
-            res.status(200).json({Reservas})
-        }catch(error){
-            res.status(500).json({message:'Error al obtener las Reservas', error});
-        }
+       if (req.method === 'GET') {
+        try {
+            const Reservas = await prisma.reservas.findMany({
+                include: {
+                    cliente: true, // Incluye la información del cliente
+                },
+            });
+    
+            res.status(200).json({ Reservas });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al obtener las Reservas', error });
+        }    
     } else if (req.method === 'POST'){
         const { id_cliente, id_mesa, fecha_hora, numero_persona_reservas, confirmacion } = req.body;
         if (!id_cliente || !id_mesa || !fecha_hora || !numero_persona_reservas || !confirmacion){
