@@ -64,7 +64,7 @@ export default async function Reservas(
                 // Consultar todas las mesas disponibles que no están reservadas para esa fecha
                 const mesasDisponibles = await prisma.mesas.findMany({
                     where: {
-                        id_mesa: {
+                        id: {
                             notIn: mesasReservadas
                         }
                     }

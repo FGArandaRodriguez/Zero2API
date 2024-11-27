@@ -104,7 +104,7 @@ async function updateOrder(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     const updatedOrder = await prisma.ordenes_cocina.update({
-      where: { id_ordenes_cocina: id },
+      where: { id_ordenes_cocina: Number(id) },
       data: {
         ...(id_pedidos && { id_pedidos: parseInt(id_pedidos) }),
         ...(id_menu && { id_menu: parseInt(id_menu) }),

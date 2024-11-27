@@ -44,7 +44,7 @@ export default async function Mesas(
         try{
             
             const updateMesa = await prisma.mesas.update({
-                where: {id_mesa: parseInt(id_mesa)},
+                where: {id: parseInt(id_mesa)},
                 data: {
                     capacidad_mesa: parseInt(capacidad_mesa),
                     numero_mesa: parseInt(numero_mesa),
@@ -67,7 +67,7 @@ export default async function Mesas(
         try{
             //esto me va a servir para eliminar el producto por ID
             const deleteMesa = await prisma.mesas.delete({
-                where: {id_mesa: parseInt(id_mesa as string)},
+                where: {id: parseInt(id_mesa as string)},
             });
             res.status(200).json(deleteMesa);
         }catch (error){
