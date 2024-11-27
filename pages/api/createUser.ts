@@ -16,8 +16,9 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<UserResponse>
 ) {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
     const {method} = req;
-
     if (method == 'POST'){
         const { username, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
