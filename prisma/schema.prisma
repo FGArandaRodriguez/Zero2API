@@ -129,17 +129,12 @@ model Pago {
 }
 
 model Metodo_Pago {
-    id             Int           @id @default(autoincrement())
-    nombre         String
-    descripcion    String?
-    activo         Boolean       @default(true)
-    fecha_creacion DateTime      @default(now())
-    ultima_actualizacion DateTime @updatedAt
-    cargo_adicional Float?       @default(0.0)
+  id Int @id @default(autoincrement())
+  Ticket Ticket[]
+  nombre String?
+  tipo String
 
-    pagos          Pago[]
-
-    Ticket Ticket[]
+  Pago Pago[]
 }
 
 model Producto {

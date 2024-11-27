@@ -11,19 +11,20 @@ export default async function name(
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,DELETE');
     if (req.method === 'GET') {
         //encontrar un solo ticket
-        const { id } = req.query;
+        const { id_ticket } = req.query;
 
-        if (id) { 
-            if (Array.isArray(id)) {
+        if (id_ticket) { 
+            if (Array.isArray(id_ticket)) {
                 return res.status(400).json({ message: 'ID de ticket inválido' });
             }
 
             try {
                 const ticket = await prisma.ticket.findUnique({
-                    where: { id_ticket: Number(id) },
+                    where: { id_ticket: Number(id_ticket) },
                     include: {
                         pedido: {
                             select: {
+                                id: true,
                                 fecha: true,
                                 Pago: { 
                                     select: {
@@ -48,8 +49,7 @@ export default async function name(
                         },
                         metodo_pago: {
                             select: {
-                                nombre: true,            
-                                cargo_adicional: true,
+                                nombre: true,
                             }
                         }
                     }
