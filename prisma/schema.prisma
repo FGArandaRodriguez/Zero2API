@@ -153,5 +153,5 @@ model Ordenes_cocina {
   menu              Menu    @relation(fields: [id_menu], references: [id])
   id_menu           Int 
   cantidad          Int 
-  estado            Boolean
+  estado            String
 }
